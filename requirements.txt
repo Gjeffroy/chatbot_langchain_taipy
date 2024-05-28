@@ -1,0 +1,8 @@
+requests == 2.32.2
+langchain == 0.2.1
+langchain-openai == 0.2.1
+pypdf == 4.2.0
+langchain-community == 0.2.1
+chromadb == 0.5.0
+lark == 1.1.9
+python-dotenv == 1.0.1

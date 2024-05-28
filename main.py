@@ -38,6 +38,6 @@ if __name__ == "__main__":
     # create a retriever from the vector store
     retriever = create_self_query_retriever(embedding, pdfs)
 
-    question = "Que contient le cycle 2 en histoire?"
+    question = "Que contient le cycle 2 en mathematique?"
     docs = retriever.invoke(question)
     pretty_print_documents(docs)
