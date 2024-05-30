@@ -12,8 +12,7 @@ def create_conversational_retriever_chain(llm_name, chain_type, retriever):
         retriever=retriever,
         return_source_documents=True,
         return_generated_question=True,
-        verbose=True,
-        max_tokens_limit = 4000
+        verbose=True
     )
 
     return qa

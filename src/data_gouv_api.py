@@ -29,8 +29,9 @@ def get_pdf_urls(api_key, dataset_id):
             'discipline': pdf["discipline"],
             'cycle': pdf["niveau_d_enseignement"],
             'description': pdf["descriptif"],
-            'url': pdf["contenu_sur_le_site"]
+            'url': pdf["contenu_sur_le_site"],
+            'doc_id': 'd'+ str(i), # Add a unique ID for each document to be used in the retriever (full URL makes the prompt too long)
         }
-        for pdf in data_json]
+        for i, pdf in enumerate(data_json)]
 
     return pdf_urls

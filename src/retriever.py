@@ -6,23 +6,23 @@ from langchain_community.vectorstores import Chroma
 
 
 # helper function to extract values from a list of dictionaries
-def extract_values(dict_list, key):
+def extract_unique_values(dict_list, key):
     """
-    Extracts all values for a given key from a list of dictionaries.
+    Extracts unique values for a given key from a list of dictionaries.
 
     Parameters:
     dict_list (list): List of dictionaries
     key (str): The key whose values need to be extracted
 
     Returns:
-    list: A list of values corresponding to the given key from all dictionaries
+    set: A set of unique values corresponding to the given key from all dictionaries
     """
-    values = [d[key] for d in dict_list if key in d]
-    return values
+    values_set = {d[key] for d in dict_list if key in d}
+    return values_set
 
 
 # Create a retriever from the vector store
-def create_self_query_retriever(llm_name, embeddings, pdfs, persist_directory="docs/chroma/"):
+def create_self_query_retriever(llm_name, embeddings, pdfs, k, persist_directory="docs/chroma/"):
     """ Create a self query retriever from the vector store and using specific metadata fields.
 
     Args:
@@ -35,11 +35,11 @@ def create_self_query_retriever(llm_name, embeddings, pdfs, persist_directory="d
     object: The retriever object created from the vector store.
     """
     metadata_field_info = [
-        AttributeInfo(
-            name="source",
-            description="The lecture the chunk is from, should be one of " + str(extract_values(pdfs, "url")),
-            type="string",
-        ),
+        # AttributeInfo(
+        #     name="doc_id",
+        #     description="The lecture the chunk is from, should be one of " + str(extract_unique_values(pdfs, "doc_id")),
+        #     type="string",
+        # ),
         AttributeInfo(
             name="page",
             description="The page from the lecture",
@@ -47,7 +47,7 @@ def create_self_query_retriever(llm_name, embeddings, pdfs, persist_directory="d
         ),
         AttributeInfo(
             name="cycle",
-            description="The cycle the chunk is from, should be one of " + str(extract_values(pdfs, "cycle")),
+            description="The cycle the chunk is from, should be one of " + str(extract_unique_values(pdfs, "cycle")),
             type="string",
         ),
         AttributeInfo(
@@ -57,7 +57,7 @@ def create_self_query_retriever(llm_name, embeddings, pdfs, persist_directory="d
         ),
         AttributeInfo(
             name="discipline",
-            description="The name of the discipline the chunk is about, should be one of " + str(extract_values(pdfs, "discipline")),
+            description="The name of the discipline the chunk is about, should be one of " + str(extract_unique_values(pdfs, "discipline")),
             type="string",
         )
     ]
@@ -74,9 +74,8 @@ def create_self_query_retriever(llm_name, embeddings, pdfs, persist_directory="d
         metadata_field_info,
         verbose=True,
         search_type="mmr",
-        max_tokens_limit=4000,
-        enable_limit=True,
-        search_kwargs={"k": 1}
+        max_tokens_limit=3500,
+        search_kwargs={"k": k}
     )
 
     return retriever
