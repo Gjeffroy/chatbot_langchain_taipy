@@ -1,5 +1,6 @@
 import json
 
+
 def pretty_print_json(json_data):
     """Pretty print JSON data to the console.
 

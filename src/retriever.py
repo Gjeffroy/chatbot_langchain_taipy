@@ -4,6 +4,7 @@ from langchain.chains.query_constructor.base import AttributeInfo
 from langchain_community.vectorstores import Chroma
 
 
+
 # helper function to extract values from a list of dictionaries
 def extract_values(dict_list, key):
     """
@@ -21,8 +22,8 @@ def extract_values(dict_list, key):
 
 
 # Create a retriever from the vector store
-def create_self_query_retriever(embeddings, pdfs, persist_directory="docs/chroma/"):
-    """ Create a retriever from the vector store.
+def create_self_query_retriever(llm_name, embeddings, pdfs, persist_directory="docs/chroma/"):
+    """ Create a self query retriever from the vector store and using specific metadata fields.
 
     Args:
 
@@ -65,13 +66,19 @@ def create_self_query_retriever(embeddings, pdfs, persist_directory="docs/chroma
 
     document_content_description = "Lecture notes"
     llm = OpenAI(temperature=0)
+
     retriever = SelfQueryRetriever.from_llm(
         llm,
         vectordb,
         document_content_description,
         metadata_field_info,
         verbose=True,
-        search_type="mmr"
+        search_type="mmr",
+        max_tokens_limit=4000,
+        enable_limit=True,
+        search_kwargs={"k": 1}
     )
 
     return retriever
+
+
